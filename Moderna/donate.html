@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>Moderna Bootstrap Template - Index</title>
+  <title>DonAIte Bootstrap Template - Index</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
@@ -30,14 +30,41 @@
   <link href="assets/css/style.css" rel="stylesheet">
 
   <!-- =======================================================
-  * Template Name: Moderna - v4.10.1
+  * Template Name: DonAIte - v4.10.1
   * Template URL: https://bootstrapmade.com/free-bootstrap-template-corporate-moderna/
   * Author: BootstrapMade.com
   * License: https://bootstrapmade.com/license/
   ======================================================== -->
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>  
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>  
+
+
   <script>  
+
+// const form = document.querySelector('form')
+
+// add event listener
+// form.addEventListener('submit', e => {
+//   // disable default action
+//   e.preventDefault()
+
+//   // collect files
+//   const files = document.getElementById('myfile123').files//null
+//   const formData = new FormData()
+//   formData.append('Face', files[0]);
+//   const xhr = new XMLHttpRequest()
+//   xhr.onload = () => {
+//       xhr.responseText;
+  
+//     xhr.open('POST', "/donateupload")
+//     xhr.send(formData)
+//   }
+
+
+
+
+
+//works
   $(document).ready(function() {
     $('#donateUploadForm').submit(function() {  
         $("#status").empty().text("File is uploading...");  
@@ -53,6 +80,10 @@
         return false;  
         });
   });
+
+
+
+
   </script> 
 </head>
 
@@ -63,7 +94,7 @@
     <div class="container d-flex justify-content-between align-items-center">
 
       <div class="logo">
-        <h1 class="text-light"><a href="index.html"><span>Moderna</span></a></h1>
+        <h1 class="text-light"><a href="index.html"><span>DonAIte</span></a></h1>
         <!-- Uncomment below if you prefer to use an image logo -->
         <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
       </div>
@@ -74,6 +105,7 @@
           <li><a href="create.html">Create</a></li>
           <li><a href="donate.html">Donate</a></li>
           <li><a href="service.html">Service</a></li>
+          <li><a href="display.html">Display</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -99,22 +131,25 @@
     </section><!-- End Our Services Section -->
     <section id="donations">
         <div class="container">
+            <form>
+                <div class="form-group">
+                <label>Payments Detail:</label>
+                <input type="number" class="form-control" id="amount" placeholder="Enter Amount to Donate">
+                <input type="number" class="form-control" id="CardNumber" placeholder="Enter Card Number">
+                <input type="text" class="form-control" id="Name" placeholder="Enter Name"> 
+                <input type="text" class="form-control" id="Expiry" placeholder="Enter Expiry Date"> 
+                <input type="number" class="form-control" id="CVC" placeholder="Enter Security Code">
+                <input type="text" class="form-control" id="Address" placeholder="Enter Address"> 
+                <br>
+                </div>
+            </form>
             <form id="donateUploadForm" enctype="multipart/form-data" action="/donateupload" method="post" >  
-                <input type="file" name="myfile" /><br/><br/>  
+                <input id = "myfile123" type="file" name="face" /><br/><br/>  
                 <input type="submit" value="Upload Donate" name="submit"><br/><br/>  
                 <span id="status"></span>  
             </form>
-            <form>
-                <div class="form-group">
-                <label for="pwd">Amount: (in Pounds)</label>
-                <input type="number" class="form-control" id="amount" placeholder="Enter Amount to Donate">
-                </div>
-                <br>
-                <button type="submit">Submit</button>
-            </form>
-        </div>
         
-            
+        </div>
     </section>
 
 
@@ -126,7 +161,7 @@
   <footer id="footer" data-aos="fade-up" data-aos-easing="ease-in-out" data-aos-duration="500">
     <div class="container">
       <div class="copyright">
-        &copy; Copyright <strong><span>PLACEHOLDER</span></strong>. All Rights Reserved
+        &copy; Copyright <strong><span>DonAIte</span></strong>. All Rights Reserved
       </div>
       <div class="credits">
         <!-- All the links in the footer should remain intact. -->
