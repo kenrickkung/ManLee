@@ -10,50 +10,34 @@ const {Service} = require("./models/service");
 const {Shelter} = require("./models/shelter");
 const {Donation} = require("./models/donation");
 const {Purchase} = require("./models/purchase");
-
-
-
-
+const fs = require("fs");
 
 const fileUpload =  require("express-fileupload");
-
+const port = 5050;
 
 app.use(fileUpload());
 
 function vectorDistance(array1,array2){
     arr = array1.map((currentValue,index,array)=>Math.pow(array1[index]-array2[index],2));
-    // console.log(arr);
     val = arr.reduce((x,y)=> {return x+y;})
-    // console.log(val);
     return Math.sqrt(val);
 }
 
 
-
-
-
-
-
-
 app.post('/donateupload',async(req,res)=>{
     donation_amount = 10;
-    randomid = uuidv4();
+    imagename = "./"+uuidv4();
     face = req.files.face;
-    await face.mv('./donate/' + randomid+".jpeg");
-    dummy  = spawn('python3', ['embed_face.py',"donate/" + randomid+".jpeg"]);
-    embed = "";
+    await face.mv(imagename);
+    dummy  = spawn('python3', ['embed_face.py',imagename]);
     dummy.stdout.on('data', async(data)=> {
-        console.log("Hey from js")
         str = data.toString();
+        fs.unlink(imagename,()=>{return});
         if (parseInt(str) == -1){
-            return res.send("Error Try Again")
+            return res.send("Error Try Again");
         }
-        console.log(str === "ERROR");
-        console.log(str);
         embed  = str.split(",").map((currentValue,index,array)=>{return parseFloat(currentValue)});
-        console.log(embed);
         accounts = await Account.find().exec();
-
         maxdist = 99999999999999999999;
         idx = 0
         flag = false;
@@ -71,31 +55,30 @@ app.post('/donateupload',async(req,res)=>{
         }
         else
         {
-            console.log(accounts[idx]._id + "Given " + donation_amount);
-
             accounts[idx].credit += donation_amount;
             accounts[idx].save();
         }
         res.send("donation successfull!");
+
     });
+
 });
 
 
 
 
 app.post('/createupload',async(req,res)=>{
-    randomid = uuidv4();
+    imagename = "./"+uuidv4();
     face = req.files.face;
-    await face.mv( './create/' + randomid+".jpeg");
-    dummy  = spawn('python3', ['embed_face.py',"create/" + randomid+".jpeg"]);
-    embed = "";
+    await face.mv(imagename);
+    dummy  = spawn('python3', ['embed_face.py',imagename]);
     dummy.stdout.on('data', async(data)=> {
         str = data.toString();
+        fs.unlink(imagename,()=>{return});
         if (parseInt(str) == -1){
             return res.send("Error Try Again");
         }
         embed  = str.split(",").map((currentValue,index,array)=>{return parseFloat(currentValue)});
-        console.log("New Account Created");
         account = new Account({embed:embed,credit:0});
         account.save();
         res.send("Creation successfull!");
@@ -111,17 +94,16 @@ app.post('/createupload',async(req,res)=>{
 
 
 app.post('/displaycredit',async(req,res)=>{
-    randomid = uuidv4() + ".jpeg";
+    imagename = "./"+uuidv4();
     face = req.files.face;
-    await face.mv(randomid);
-    dummy  = spawn('python3', ['embed_face.py',randomid]);
-    embed = "";
+    await face.mv(imagename);
+    dummy  = spawn('python3', ['embed_face.py',imagename]);
     dummy.stdout.on('data', async(data)=> {
         str = data.toString();
+        fs.unlink(imagename,()=>{return});
         if (parseInt(str) == -1){
             return res.send("Error Try Again")
         }
-        console.log(str);
         embed  = str.split(",").map((currentValue,index,array)=>{return parseFloat(currentValue)});
         accounts = await Account.find().exec();
         maxdist = 99999999999999999999;
@@ -143,8 +125,8 @@ app.post('/displaycredit',async(req,res)=>{
             account = accounts[idx];
 
         }
-        string = "ID: "+ account._id +  " Face Embed: "  +account.embed + " Credit: " + account.credit 
-        res.end(string);
+        string = "ID: "+ account._id +   " Credit: " + account.credit 
+        res.send(string);
     });
 });
 
@@ -156,14 +138,13 @@ app.post('/displaycredit',async(req,res)=>{
 
 app.post('/shelterupload',async(req,res)=>{ 
     charge_amount = 10;
-    randomid = uuidv4()
+    imagename = "./"+uuidv4()
     face = req.files.face;
-    await face.mv('./shelter/' + randomid+".jpeg");
-    dummy  = spawn('python3', ['embed_face.py',"shelter/" + randomid + ".jpeg"]);
-    embed = "";
+    await face.mv(imagename);
+    dummy  = spawn('python3', ['embed_face.py',imagename]);
     dummy.stdout.on('data', async(data)=> {
-        console.log("Hey from js")
         str = data.toString();
+        fs.unlink(imagename,()=>{return});
         if (parseInt(str) == -1){
             return res.send("Error Try Again")
         }
@@ -180,22 +161,19 @@ app.post('/shelterupload',async(req,res)=>{
                 maxdist = dist;
             }
         }
-        console.log(accounts[idx].credit);
-        console.log(charge_amount);
-
         if (!flag || accounts[idx].credit < charge_amount){
             return res.end("Insufficent Funds!");
         }
         else
         {
-            console.log(accounts[idx]._id + "Charged" + charge_amount);
             accounts[idx].credit -= charge_amount;
             accounts[idx].save();
         }
         purchase = new Purchase({
             account_id : accounts[idx]._id
             });
-        res.end("account charged successfully!");
+
+        res.send("account charged successfully!");
     });
 });
 
@@ -272,7 +250,6 @@ app.get("/assets/vendor/swiper/swiper-bundle.min.css",async(req,res)=>{
 app.get("/assets/css/style.css",async(req,res)=>{
     res.sendFile(__dirname + "/Moderna/assets/css/style.css");  
 });
-
 
 
 app.get("/assets/vendor/purecounter/purecounter_vanilla.js",async(req,res)=>{
@@ -352,9 +329,11 @@ app.get("/assets/img/favicon.png",async(req,res)=>{
 });
 
 
+app.get("/assets/img/logo.png",async(req,res)=>{
+    res.sendFile(__dirname+ "/Moderna/assets/assets/img/favicon.png");  
+}
+)
 
 
 
-
-
-app.listen(5050);
+app.listen(port);

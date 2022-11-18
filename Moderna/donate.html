@@ -41,30 +41,8 @@
 
   <script>  
 
-// const form = document.querySelector('form')
-
-// add event listener
-// form.addEventListener('submit', e => {
-//   // disable default action
-//   e.preventDefault()
-
-//   // collect files
-//   const files = document.getElementById('myfile123').files//null
-//   const formData = new FormData()
-//   formData.append('Face', files[0]);
-//   const xhr = new XMLHttpRequest()
-//   xhr.onload = () => {
-//       xhr.responseText;
-  
-//     xhr.open('POST', "/donateupload")
-//     xhr.send(formData)
-//   }
 
 
-
-
-
-//works
   $(document).ready(function() {
     $('#donateUploadForm').submit(function() {  
         $("#status").empty().text("File is uploading...");  
